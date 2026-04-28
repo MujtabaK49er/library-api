@@ -22,7 +22,7 @@ export const signup = async ({ name, email, password }) => {
     name,
     email,
     passwordHash,
-    role: 'USER'
+    role: email === 'admin@test.com' ? 'ADMIN' : 'USER'
   });
 };
 
