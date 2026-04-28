@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import authRoutes from './routes/authRoutes.js';
 import bookRoutes from './routes/bookRoutes.js';
 import loanRoutes from './routes/loanRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use(morgan('tiny'));
 app.use('/api/books', bookRoutes);
 app.use('/api/loans', loanRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 app.use('/api/auth', authRoutes);
 
