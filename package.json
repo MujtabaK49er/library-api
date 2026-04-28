@@ -7,11 +7,11 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-  "dev": "node --env-file=.env --watch src/server.js",
-  "start": "node src/server.js",
-  "postinstall": "prisma generate",
-  "render-build": "prisma db push"
-},
+    "dev": "node --env-file=.env --watch src/server.js",
+    "start": "node src/server.js",
+    "postinstall": "prisma generate",
+    "render-build": "prisma db push"
+  },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
     "eslint": "^9.29.0",
