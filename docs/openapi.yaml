@@ -1,0 +1,331 @@
+openapi: 3.0.0
+info:
+  title: Library Management API
+  version: 1.0.0
+  description: REST API for users, books, loans, and reviews.
+
+servers:
+  - url: https://library-api-zpz7.onrender.com
+  - url: http://localhost:3000
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /api/auth/signup:
+    post:
+      summary: Create a new user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Admin
+                email: admin5@test.com
+                password: Pass123
+      responses:
+        "201":
+          description: User created
+        "400":
+          description: Bad request
+
+  /api/auth/login:
+    post:
+      summary: Login user and return JWT
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: admin5@test.com
+                password: Pass123
+      responses:
+        "200":
+          description: Login successful
+        "401":
+          description: Invalid credentials
+
+  /api/books:
+    get:
+      summary: Get all books
+      tags: [Books]
+      responses:
+        "200":
+          description: List of books
+
+    post:
+      summary: Create a book
+      tags: [Books]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                title: SwaggerBook
+                author: Admin
+                genre: Test
+                isbn: "121212"
+                publishedYear: 2025
+                availableCopies: 5
+      responses:
+        "201":
+          description: Book created
+        "401":
+          description: No token provided
+        "403":
+          description: Forbidden
+
+  /api/books/{id}:
+    get:
+      summary: Get book by ID
+      tags: [Books]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Book found
+        "404":
+          description: Book not found
+
+    put:
+      summary: Update book
+      tags: [Books]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                availableCopies: 4
+      responses:
+        "200":
+          description: Book updated
+        "403":
+          description: Forbidden
+        "404":
+          description: Book not found
+
+    delete:
+      summary: Delete book
+      tags: [Books]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Book deleted
+        "403":
+          description: Forbidden
+        "404":
+          description: Book not found
+
+  /api/loans:
+    get:
+      summary: Get all loans
+      tags: [Loans]
+      responses:
+        "200":
+          description: List of loans
+
+    post:
+      summary: Create loan / borrow book
+      tags: [Loans]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                userId: 1
+                bookId: 1
+      responses:
+        "201":
+          description: Loan created
+        "401":
+          description: No token provided
+        "404":
+          description: Book not found
+
+  /api/loans/{id}:
+    get:
+      summary: Get loan by ID
+      tags: [Loans]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Loan found
+        "404":
+          description: Loan not found
+
+    delete:
+      summary: Delete loan
+      tags: [Loans]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Loan deleted
+        "404":
+          description: Loan not found
+
+  /api/loans/{id}/return:
+    put:
+      summary: Return borrowed book
+      tags: [Loans]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Book returned
+        "404":
+          description: Loan not found
+
+  /api/reviews:
+    get:
+      summary: Get all reviews
+      tags: [Reviews]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of reviews
+
+    post:
+      summary: Create review
+      tags: [Reviews]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                userId: 1
+                bookId: 1
+                rating: 5
+                comment: Great book
+      responses:
+        "201":
+          description: Review created
+        "401":
+          description: No token provided
+
+  /api/reviews/{id}:
+    get:
+      summary: Get review by ID
+      tags: [Reviews]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Review found
+        "404":
+          description: Review not found
+
+    put:
+      summary: Update review
+      tags: [Reviews]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                rating: 4
+                comment: Updated review
+      responses:
+        "200":
+          description: Review updated
+        "404":
+          description: Review not found
+
+    delete:
+      summary: Delete review
+      tags: [Reviews]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Review deleted
+        "404":
+          description: Review not found
